@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 
 import PropTypes from 'prop-types';
-import {ActivityIndicator, View} from 'react-native';
+import {ActivityIndicator} from 'react-native';
 import api from '../../services/api';
 import {
   Container,
@@ -16,7 +16,6 @@ import {
   Title,
   Author,
   Loader,
-  ContainerList,
 } from './styles';
 
 export default class User extends Component {
@@ -43,7 +42,15 @@ export default class User extends Component {
 
   moreItens = () => {
     const {page} = this.state;
-    this.loadData(page + 1);
+    if (page !== 1) {
+      this.loadData(page + 1);
+    }
+  };
+
+  handleNavigate = item => {
+    console.tron.log(item);
+    const {navigation} = this.props;
+    navigation.navigate('Repo', {item});
   };
 
   onRefresh = () => {
@@ -105,7 +112,9 @@ export default class User extends Component {
             onEndReached={this.moreItens}
             keyExtractor={star => String(star.id)}
             renderItem={({item}) => (
-              <Starred loading={loading}>
+              <Starred
+                loading={loading}
+                onPress={() => this.handleNavigate(item)}>
                 <OwnerAvatar source={{uri: item.owner.avatar_url}} />
                 <Info>
                   <Title>{item.name}</Title>
